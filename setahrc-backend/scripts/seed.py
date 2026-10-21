@@ -1,6 +1,6 @@
 import sys
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # Ensure parent directory is on python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -29,7 +29,7 @@ def seed_database():
     db = SessionLocal()
 
     try:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc).replace(tzinfo=None)
 
         # ----------------------------------------------------
         # 1. Users (Role demonstration accounts)

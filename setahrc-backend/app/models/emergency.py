@@ -1,7 +1,6 @@
-from datetime import datetime
 from sqlalchemy import Column, String, Integer, Float, Boolean, Text, DateTime, ForeignKey, Index
 from sqlalchemy.orm import relationship
-from app.database import Base
+from app.database import Base, utc_now
 
 
 class Emergency(Base):
@@ -26,8 +25,8 @@ class Emergency(Base):
     approval_status = Column(String(30), nullable=True)
     approval_reason = Column(Text, nullable=True)
     handover_notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utc_now, nullable=False, index=True)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now, nullable=False)
 
     history = relationship("EmergencyHistory", back_populates="emergency", cascade="all, delete-orphan", order_by="EmergencyHistory.created_at")
     recommendations = relationship("HospitalRecommendation", back_populates="emergency", cascade="all, delete-orphan")
@@ -48,6 +47,6 @@ class EmergencyHistory(Base):
     at_time = Column(String(20), nullable=False)
     event = Column(String(150), nullable=False)
     actor = Column(String(100), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utc_now, nullable=False)
 
     emergency = relationship("Emergency", back_populates="history")

@@ -1,6 +1,5 @@
-from datetime import datetime
 from sqlalchemy import Column, String, Integer, Float, Boolean, JSON, DateTime, Index
-from app.database import Base
+from app.database import Base, utc_now
 
 
 class Hospital(Base):
@@ -24,8 +23,8 @@ class Hospital(Base):
     oxygen_available = Column(Boolean, nullable=False, default=True)
     status = Column(String(30), nullable=False, default="Available")  # Available, Busy, Offline
     operational_load = Column(Float, nullable=False, default=0.5)     # 0.0 to 1.0
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utc_now, nullable=False)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now, nullable=False)
 
     __table_args__ = (
         Index("idx_hospitals_status", "status"),

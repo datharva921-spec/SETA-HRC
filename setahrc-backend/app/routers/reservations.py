@@ -3,7 +3,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.database import get_db, utc_now
 from app.models.reservation import ResourceReservation, ResourceHistory
 from app.models.hospital import Hospital
 from app.models.emergency import Emergency, EmergencyHistory
@@ -35,7 +35,7 @@ async def create_resource_reservation(
     if not hospital:
         raise HTTPException(status_code=404, detail="Hospital not found.")
 
-    now = datetime.utcnow()
+    now = utc_now()
 
     if payload.resource_type == "bed":
         if (hospital.beds_available or 0) < payload.quantity:
@@ -127,7 +127,7 @@ async def release_resource_reservation(
         return {"success": True, "message": "Reservation was already released."}
 
     hospital = db.query(Hospital).filter(Hospital.id == res.hospital_id).first()
-    now = datetime.utcnow()
+    now = utc_now()
 
     if hospital:
         if res.resource_type == "bed":

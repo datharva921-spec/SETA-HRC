@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -32,7 +32,7 @@ def login(payload: UserLogin, db: Session = Depends(get_db)):
     
     # Audit log
     audit = AuditLog(
-        id=f"EV-{int(datetime.utcnow().timestamp() * 1000)}",
+        id=f"EV-{int(datetime.now(timezone.utc).timestamp() * 1000)}",
         actor=user.name,
         action="User signed in",
         target=user.email,
@@ -67,7 +67,7 @@ def register(payload: UserCreate, db: Session = Depends(get_db)):
     valid_roles = ["dispatcher", "hospital", "paramedic", "admin"]
     role = payload.role if payload.role in valid_roles else "dispatcher"
 
-    user_id = f"U-{int(datetime.utcnow().timestamp() * 1000) % 10000:04d}"
+    user_id = f"U-{int(datetime.now(timezone.utc).timestamp() * 1000) % 10000:04d}"
     new_user = User(
         id=user_id,
         name=payload.name,
@@ -80,7 +80,7 @@ def register(payload: UserCreate, db: Session = Depends(get_db)):
     db.add(new_user)
 
     audit = AuditLog(
-        id=f"EV-{int(datetime.utcnow().timestamp() * 1000)}",
+        id=f"EV-{int(datetime.now(timezone.utc).timestamp() * 1000)}",
         actor=payload.name,
         action="User registered",
         target=payload.email,
@@ -150,7 +150,7 @@ def update_user_status(
 
     user.status = payload.status
     audit = AuditLog(
-        id=f"EV-{int(datetime.utcnow().timestamp() * 1000)}",
+        id=f"EV-{int(datetime.now(timezone.utc).timestamp() * 1000)}",
         actor=current_user.name,
         action="User status updated",
         target=user.email,

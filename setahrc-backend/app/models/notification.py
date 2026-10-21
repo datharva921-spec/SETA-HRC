@@ -1,6 +1,5 @@
-from datetime import datetime
 from sqlalchemy import Column, String, Boolean, DateTime, Index
-from app.database import Base
+from app.database import Base, utc_now
 
 
 class Notification(Base):
@@ -13,7 +12,7 @@ class Notification(Base):
     message = Column(String(300), nullable=False)
     type = Column(String(30), nullable=False, default="notice")  # urgent, info, notice
     read = Column(Boolean, nullable=False, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utc_now, nullable=False)
 
     __table_args__ = (
         Index("idx_notifications_read_created", "read", "created_at"),

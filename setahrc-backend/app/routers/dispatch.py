@@ -1,9 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.database import get_db, utc_now
 from app.models.ambulance import Ambulance
 from app.models.emergency import Emergency, EmergencyHistory
 from app.models.audit import AuditLog
@@ -44,7 +44,7 @@ def create_ambulance(
     db.add(amb)
 
     audit = AuditLog(
-        id=f"EV-{int(datetime.utcnow().timestamp() * 1000)}",
+        id=f"EV-{int(datetime.now(timezone.utc).timestamp() * 1000)}",
         actor=current_user.name,
         action="Ambulance added",
         target=f"{a_id} · {payload.unit}",
@@ -77,7 +77,7 @@ async def assign_ambulance(
             detail=f"Unit {ambulance.unit} is not available (current status: '{ambulance.status}')."
         )
 
-    now = datetime.utcnow()
+    now = utc_now()
     time_str = now.strftime("%H:%M")
 
     # Update emergency
@@ -154,7 +154,7 @@ async def update_ambulance_status(
     if payload.location:
         ambulance.location = payload.location
 
-    now = datetime.utcnow()
+    now = utc_now()
     time_str = now.strftime("%H:%M")
 
     # If linked to an active emergency, update case status accordingly

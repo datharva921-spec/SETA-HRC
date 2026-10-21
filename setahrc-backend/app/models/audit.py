@@ -1,6 +1,5 @@
-from datetime import datetime
 from sqlalchemy import Column, String, Text, DateTime, Index
-from app.database import Base
+from app.database import Base, utc_now
 
 
 class AuditLog(Base):
@@ -12,7 +11,7 @@ class AuditLog(Base):
     target = Column(String(150), nullable=False)
     reason = Column(String(255), nullable=False, default="")
     details = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+    created_at = Column(DateTime, default=utc_now, nullable=False, index=True)
 
     __table_args__ = (
         Index("idx_audit_logs_action", "action"),

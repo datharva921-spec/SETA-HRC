@@ -1,6 +1,5 @@
-from datetime import datetime
 from sqlalchemy import Column, String, DateTime, Index
-from app.database import Base
+from app.database import Base, utc_now
 
 
 class User(Base):
@@ -13,8 +12,8 @@ class User(Base):
     role = Column(String(30), nullable=False, default="dispatcher")  # dispatcher, hospital, paramedic, admin
     status = Column(String(30), nullable=False, default="Active")     # Active, Inactive, Pending
     hospital_id = Column(String(50), nullable=True)                  # For hospital users
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utc_now, nullable=False)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now, nullable=False)
 
     __table_args__ = (
         Index("idx_users_role_status", "role", "status"),

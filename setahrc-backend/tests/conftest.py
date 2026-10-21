@@ -26,9 +26,9 @@ def setup_test_db():
     try:
         from scripts.seed import (
             User, Hospital, Ambulance, Emergency, EmergencyHistory,
-            get_password_hash, datetime, timedelta
+            get_password_hash, datetime, timedelta, timezone
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc).replace(tzinfo=None)
         # Create users
         db.add(User(
             id="U-TEST-01", name="Test Dispatcher", email="dispatcher@test.com",

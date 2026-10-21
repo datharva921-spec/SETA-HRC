@@ -1,9 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.database import get_db, utc_now
 from app.models.hospital import Hospital
 from app.models.reservation import ResourceHistory
 from app.models.audit import AuditLog
@@ -47,7 +47,7 @@ async def update_hospital_resources(
     if not hospital:
         raise HTTPException(status_code=404, detail="Hospital not found.")
 
-    now = datetime.utcnow()
+    now = utc_now()
     changes_desc = []
 
     if payload.beds_available is not None:
@@ -164,7 +164,7 @@ def create_hospital(
     db.add(hospital)
 
     audit = AuditLog(
-        id=f"EV-{int(datetime.utcnow().timestamp() * 1000)}",
+        id=f"EV-{int(datetime.now(timezone.utc).timestamp() * 1000)}",
         actor=current_user.name,
         action="Hospital added",
         target=f"{h_id} · {payload.name}",
@@ -192,7 +192,7 @@ def update_hospital(
         setattr(hospital, field, val)
 
     audit = AuditLog(
-        id=f"EV-{int(datetime.utcnow().timestamp() * 1000)}",
+        id=f"EV-{int(datetime.now(timezone.utc).timestamp() * 1000)}",
         actor=current_user.name,
         action="Hospital details updated",
         target=f"{hospital.id} · {hospital.name}",

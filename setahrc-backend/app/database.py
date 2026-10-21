@@ -1,5 +1,6 @@
 import os
 import logging
+from datetime import datetime, timezone
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 from app.config import settings
@@ -7,6 +8,10 @@ from app.config import settings
 logger = logging.getLogger("seta_hrc.database")
 
 Base = declarative_base()
+
+
+def utc_now() -> datetime:
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 def get_engine():
     db_url = settings.DATABASE_URL

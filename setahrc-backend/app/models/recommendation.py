@@ -1,7 +1,6 @@
-from datetime import datetime
 from sqlalchemy import Column, Integer, String, Float, Text, JSON, DateTime, ForeignKey, Index
 from sqlalchemy.orm import relationship
-from app.database import Base
+from app.database import Base, utc_now
 
 
 class HospitalRecommendation(Base):
@@ -21,7 +20,7 @@ class HospitalRecommendation(Base):
     missing_data_flags = Column(JSON, nullable=False, default=list)
     status = Column(String(30), nullable=False, default="Proposed")  # Proposed, Approved, Rejected, Overridden
     override_reason = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utc_now, nullable=False)
 
     emergency = relationship("Emergency", back_populates="recommendations")
     hospital = relationship("Hospital")

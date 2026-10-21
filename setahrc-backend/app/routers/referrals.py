@@ -2,7 +2,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.database import get_db, utc_now
 from app.models.emergency import Emergency, EmergencyHistory
 from app.models.hospital import Hospital
 from app.models.reservation import ResourceReservation, ResourceHistory
@@ -37,7 +37,7 @@ async def record_referral_decision(
     if not hospital:
         raise HTTPException(status_code=404, detail="Hospital not found.")
 
-    now = datetime.utcnow()
+    now = utc_now()
     time_str = now.strftime("%H:%M")
 
     if payload.decision == "Accepted":

@@ -3,7 +3,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.database import get_db, utc_now
 from app.models.emergency import Emergency, EmergencyHistory
 from app.models.audit import AuditLog
 from app.models.notification import Notification
@@ -52,7 +52,7 @@ async def create_emergency(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role(["dispatcher", "admin"]))
 ):
-    now = datetime.utcnow()
+    now = utc_now()
     time_str = now.strftime("%H:%M")
     
     # Generate sequential unique Case ID
@@ -191,7 +191,7 @@ async def update_emergency_status(
 
     old_status = emergency.status
     emergency.status = payload.status
-    now = datetime.utcnow()
+    now = utc_now()
     time_str = now.strftime("%H:%M")
 
     # Record history
@@ -241,7 +241,7 @@ async def update_triage_assessment(
     emergency.priority_reason = payload.priority_reason
     emergency.status = "Triaged"
 
-    now = datetime.utcnow()
+    now = utc_now()
     time_str = now.strftime("%H:%M")
 
     history = EmergencyHistory(

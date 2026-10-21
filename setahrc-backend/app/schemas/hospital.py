@@ -1,5 +1,5 @@
 from typing import List, Optional, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class DepartmentAvailability(BaseModel):
@@ -73,5 +73,4 @@ class HospitalResponse(BaseModel):
     status: str
     operational_load: float
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

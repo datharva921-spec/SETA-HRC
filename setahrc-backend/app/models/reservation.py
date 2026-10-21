@@ -1,7 +1,6 @@
-from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Index, CheckConstraint
 from sqlalchemy.orm import relationship
-from app.database import Base
+from app.database import Base, utc_now
 
 
 class ResourceReservation(Base):
@@ -13,8 +12,8 @@ class ResourceReservation(Base):
     resource_type = Column(String(30), nullable=False)  # bed, icu, oxygen
     quantity = Column(Integer, nullable=False, default=1)
     status = Column(String(30), nullable=False, default="Reserved")  # Reserved, Claimed, Released
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utc_now, nullable=False)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now, nullable=False)
 
     emergency = relationship("Emergency", back_populates="reservations")
     hospital = relationship("Hospital")
@@ -35,7 +34,7 @@ class ResourceHistory(Base):
     new_quantity = Column(Integer, nullable=False, default=0)
     reason = Column(String(200), nullable=False)
     actor = Column(String(100), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utc_now, nullable=False)
 
     hospital = relationship("Hospital")
 

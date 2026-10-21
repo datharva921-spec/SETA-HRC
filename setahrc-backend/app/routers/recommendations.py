@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.database import get_db, utc_now
 from app.models.emergency import Emergency, EmergencyHistory
 from app.models.hospital import Hospital
 from app.models.recommendation import HospitalRecommendation
@@ -35,7 +35,7 @@ def generate_hospital_recommendations(
     ranked = rank_hospitals(hospitals, emergency)
 
     # Persist recommendations for clinical auditability
-    now = datetime.utcnow()
+    now = utc_now()
     # Delete old proposed recommendations for this case to avoid clutter
     db.query(HospitalRecommendation).filter(
         HospitalRecommendation.emergency_id == emergency_id,
@@ -111,7 +111,7 @@ async def approve_hospital_recommendation(
     if not hospital:
         raise HTTPException(status_code=404, detail="Selected hospital does not exist.")
 
-    now = datetime.utcnow()
+    now = utc_now()
     time_str = now.strftime("%H:%M")
 
     # Update emergency record
