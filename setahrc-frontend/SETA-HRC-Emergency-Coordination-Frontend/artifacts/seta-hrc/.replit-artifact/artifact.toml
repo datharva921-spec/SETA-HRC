@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "SETA-HRC"
+description = "A responsive emergency coordination web app for triage, ambulance dispatch, hospital resource management, and role-based emergency operations."
+version = "1.0.0"
+id = "artifacts/seta-hrc"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22474
+
+[services.development]
+run = "pnpm --filter @workspace/seta-hrc run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/seta-hrc", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/seta-hrc/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22474"
+BASE_PATH = "/"

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="SETA-HRC">
+  <rect width="128" height="128" rx="28" fill="#17283a"/>
+  <path d="M57 24h14v33h33v14H71v33H57V71H24V57h33z" fill="#78c8b7"/>
+  <path d="M57 24h14v33h33v14H71v33H57V71H24V57h33z" fill="none" stroke="#d6f0e9" stroke-width="2"/>
+</svg>
